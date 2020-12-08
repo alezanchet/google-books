@@ -1,3 +1,4 @@
+# @generated: @expo/next-adapter@2.1.0
 node_modules/**/*
 .expo/*
 npm-debug.*
@@ -8,6 +9,25 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+web-report/
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# debug
+yarn-debug.log*
+yarn-error.log*
 
 # macOS
 .DS_Store
+
+# misc
+.DS_Store
+.env*
+
+.next
