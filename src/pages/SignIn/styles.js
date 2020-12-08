@@ -45,13 +45,17 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     flexDirection: 'row',
     borderRadius: 5,
-    justifyContent: 'space-between',
-    paddingHorizontal: 30,
+    justifyContent: 'center',
     alignItems: 'center',
   },
 
   textButton: {
     fontSize: 14,
     fontWeight: 'bold',
+  },
+
+  iconButton: {
+    position: 'absolute',
+    right: 10,
   },
 });

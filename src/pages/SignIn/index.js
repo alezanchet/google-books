@@ -39,14 +39,16 @@ const SignIn = () => {
         <Text style={styles.phrase}>A verdade{'\n'}está escrita.</Text>
         <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
           {loading ? (
-            <ActivityIndicator
-              color="#0d0d0d"
-              style={{ alignSelf: 'center' }}
-            />
+            <ActivityIndicator color="#0d0d0d" />
           ) : (
             <>
               <Text style={styles.textButton}>Entrar no Livros</Text>
-              <AntDesign name="arrowright" size={24} color="#0d0d0d" />
+              <AntDesign
+                style={styles.iconButton}
+                name="arrowright"
+                size={24}
+                color="#0d0d0d"
+              />
             </>
           )}
         </TouchableOpacity>
