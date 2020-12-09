@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     maxWidth: 1120,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 100,
+    marginBottom: 50,
   },
 
   item: {
@@ -37,5 +37,21 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     marginTop: 10,
+  },
+
+  buttonMore: {
+    height: 50,
+    width: 200,
+    borderRadius: 5,
+    backgroundColor: '#40BFFF',
+    marginBottom: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  textButton: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#f2f2f2',
   },
 });

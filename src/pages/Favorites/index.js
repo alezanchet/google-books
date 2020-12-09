@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import firebase from 'firebase';
+import { FontAwesome } from '@expo/vector-icons';
 
 import Hoverable from '../../components/Hoverable/Hoverable';
 import Footer from '../../components/Footer';
@@ -27,7 +34,7 @@ const Favorites = () => {
           snapshot.forEach(book => {
             favoritesData.push({
               id: book.val().id,
-              title: book.val().title,
+              volumeInfo: book.val().volumeInfo,
             });
           });
 
@@ -39,9 +46,16 @@ const Favorites = () => {
     loadFavorites();
   }, []);
 
+  const handleRemoveFavorite = useCallback(id => {
+    const user = firebase.auth().currentUser;
+
+    firebase.database().ref(`/users/${user.uid}/favorites/${id}`).remove();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.listContainer}>
+        {loading && <ActivityIndicator size="large" color="#808080" />}
         {favorites &&
           favorites.map(book => (
             <Hoverable
@@ -59,8 +73,13 @@ const Favorites = () => {
                   { borderColor: hoveredBook === book.id ? '#40BFFF' : '#fff' },
                 ]}
               >
-                <TouchableOpacity style={{ height: '100%', width: '100%' }}>
-                  {/* {book.volumeInfo.imageLinks !== undefined && (
+                <TouchableOpacity
+                  onPress={() => {
+                    handleRemoveFavorite(book.id);
+                  }}
+                  style={{ height: '100%', width: '100%' }}
+                >
+                  {book.volumeInfo.imageLinks !== undefined && (
                     <Image
                       style={{
                         height: 150,
@@ -71,8 +90,14 @@ const Favorites = () => {
                         uri: book.volumeInfo.imageLinks.smallThumbnail,
                       }}
                     />
-                  )} */}
-                  <Text style={styles.textItem}>{book.title}</Text>
+                  )}
+                  <Text style={styles.textItem}>{book.volumeInfo.title}</Text>
+
+                  {hoveredBook === book.id && (
+                    <View style={styles.hoveredView}>
+                      <FontAwesome name="trash-o" size={50} color="#f2f2f2" />
+                    </View>
+                  )}
                 </TouchableOpacity>
               </View>
             </Hoverable>

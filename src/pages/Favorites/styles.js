@@ -33,6 +33,15 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
+  hoveredView: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#00000066',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   textItem: {
     fontSize: 12,
     textAlign: 'center',

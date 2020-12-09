@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   Image,
   TouchableOpacity,
-  Animated,
-  FlatList,
+  ActivityIndicator,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import Hoverable from '../../components/Hoverable/Hoverable';
 import Footer from '../../components/Footer';
@@ -18,16 +18,24 @@ import { styles } from './styles';
 
 const Home = () => {
   const [hoveredBook, setHoveredBook] = useState('');
-  const [books, setBooks] = useState([]);
+  const [indexPagination, setIndexPagination] = useState(10);
+  const [loadingMoreBooks, setLoadingMoreBooks] = useState(false);
+  const [books, setBooks] = useState();
   const [searchValue, setSearchValue] = useState('');
+
+  const navigation = useNavigation();
+
+  const handleNavigate = useCallback((route, book) => {
+    navigation.navigate(route, { book });
+  }, []);
 
   useEffect(() => {
     async function loadBooks() {
+      // eslint-disable-next-line no-undef
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=${searchValue}`,
       );
       const json = await response.json();
-      console.log(json);
 
       setBooks(json.items);
     }
@@ -37,12 +45,26 @@ const Home = () => {
     }
   }, [searchValue]);
 
+  const loadMoreBooks = useCallback(async () => {
+    setLoadingMoreBooks(true);
+    // eslint-disable-next-line no-undef
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${searchValue}&startIndex=${indexPagination}`,
+    );
+    const json = await response.json();
+
+    setLoadingMoreBooks(false);
+    setBooks([...books, ...json.items]);
+    setIndexPagination(indexPagination + 10);
+  }, [searchValue, indexPagination, books]);
+
   return (
     <View style={styles.container}>
       <View style={styles.listContainer}>
         {books !== undefined &&
           books.map(book => (
             <Hoverable
+              key={book.id}
               onHoverIn={() => {
                 setHoveredBook(book.id);
               }}
@@ -51,13 +73,17 @@ const Home = () => {
               }}
             >
               <View
-                key={book.id}
                 style={[
                   styles.item,
                   { borderColor: hoveredBook === book.id ? '#40BFFF' : '#fff' },
                 ]}
               >
-                <TouchableOpacity style={{ height: '100%', width: '100%' }}>
+                <TouchableOpacity
+                  style={{ height: '100%', width: '100%' }}
+                  onPress={() => {
+                    handleNavigate('Details', book);
+                  }}
+                >
                   {book.volumeInfo.imageLinks !== undefined && (
                     <Image
                       style={{
@@ -76,6 +102,15 @@ const Home = () => {
             </Hoverable>
           ))}
       </View>
+      {books && (
+        <TouchableOpacity style={styles.buttonMore} onPress={loadMoreBooks}>
+          {loadingMoreBooks ? (
+            <ActivityIndicator size="small" color="#f2f2f2" />
+          ) : (
+            <Text style={styles.textButton}>Carregar mais...</Text>
+          )}
+        </TouchableOpacity>
+      )}
       <Header />
       <SearchInput
         value={searchValue}
