@@ -1,13 +1,20 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 import { styles } from './styles';
 
 const Footer = ({ currentPage }) => {
+  const navigation = useNavigation();
+
+  const handleNavigate = useCallback(route => {
+    navigation.navigate(route);
+  }, []);
+
   const colorList = useMemo(() => {
     let color;
-    if (currentPage === 'List') {
+    if (currentPage === 'Home') {
       color = '#40BFFF';
     } else {
       color = '#808080';
@@ -28,7 +35,12 @@ const Footer = ({ currentPage }) => {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          onPress={() => {
+            handleNavigate('Home');
+          }}
+          style={styles.button}
+        >
           <Feather name="menu" size={24} color={colorList} />
           <Text style={[styles.textButton, { color: colorList }]}>
             Listagem
@@ -36,7 +48,7 @@ const Footer = ({ currentPage }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            console.log('fav');
+            handleNavigate('Favorites');
           }}
           style={styles.button}
         >
